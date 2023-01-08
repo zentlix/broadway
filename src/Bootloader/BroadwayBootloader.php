@@ -33,13 +33,13 @@ use Spiral\Core\FactoryInterface;
 final class BroadwayBootloader extends Bootloader
 {
     protected const SINGLETONS = [
-        EventDispatchingCommandBus::class => EventDispatchingCommandBus::class,
         Serializer::class => SimpleInterfaceSerializer::class,
         EventBus::class => SimpleEventBus::class,
         EventDispatcher::class => CallableEventDispatcher::class,
         UuidGeneratorInterface::class => Version4Generator::class,
         BinaryUuidConverterInterface::class => BinaryUuidConverter::class,
         EventStreamDecorator::class => MetadataEnrichingEventStreamDecorator::class,
+        EventDispatchingCommandBus::class => [self::class, 'initEventDispatchingCommandBus'],
     ];
 
     public function __construct(
@@ -66,7 +66,7 @@ final class BroadwayBootloader extends Bootloader
             BroadwayConfig::CONFIG,
             [
                 'event_store' => InMemoryEventStore::class,
-                'read_model_factory' => InMemoryRepositoryFactory::class,
+                'read_model_repository_factory' => InMemoryRepositoryFactory::class,
                 'payload_serializer' => SimpleInterfaceSerializer::class,
                 'read_model_serializer' => SimpleInterfaceSerializer::class,
                 'metadata_serializer' => SimpleInterfaceSerializer::class,
@@ -86,7 +86,7 @@ final class BroadwayBootloader extends Bootloader
     {
         $eventStore = $this->wire($config->getEventStoreImplementation(), $factory);
 
-        assert($eventStore instanceof EventStore);
+        \assert($eventStore instanceof EventStore);
 
         $container->bindSingleton(EventStore::class, $eventStore);
     }
@@ -98,7 +98,7 @@ final class BroadwayBootloader extends Bootloader
     ): void {
         $factory = $this->wire($config->getReadModelRepositoryFactoryImplementation(), $factory);
 
-        assert($factory instanceof RepositoryFactory);
+        \assert($factory instanceof RepositoryFactory);
 
         $container->bindSingleton(RepositoryFactory::class, $factory);
     }
@@ -109,19 +109,24 @@ final class BroadwayBootloader extends Bootloader
         $readModel = $config->getReadModelSerializerImplementation();
         $metadata = $config->getMetadataSerializerImplementation();
 
-        assert($payload instanceof Serializer);
-        assert($readModel instanceof Serializer);
-        assert($metadata instanceof Serializer);
+        \assert($payload instanceof Serializer);
+        \assert($readModel instanceof Serializer);
+        \assert($metadata instanceof Serializer);
 
         $container->bindSingleton('broadway.payload_serializer', $payload);
         $container->bindSingleton('broadway.read_model_serializer', $readModel);
         $container->bindSingleton('broadway.metadata_serializer', $metadata);
     }
 
+    private function initEventDispatchingCommandBus(EventDispatcher $dispatcher): EventDispatchingCommandBus
+    {
+        return new EventDispatchingCommandBus(new SimpleCommandBus(), $dispatcher);
+    }
+
     private function wire(mixed $alias, FactoryInterface $factory): mixed
     {
         return match (true) {
-            is_string($alias) => $factory->make($alias),
+            \is_string($alias) => $factory->make($alias),
             $alias instanceof Autowire => $alias->resolve($factory),
             default => $alias
         };
