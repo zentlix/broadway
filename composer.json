@@ -1,0 +1,55 @@
+{
+    "name": "zentlix/broadway",
+    "description": "Broadway integration package for Spiral Framework",
+    "keywords": [
+        "event sourcing",
+        "domain-driven design",
+        "ddd"
+    ],
+    "homepage": "https://github.com/zentlix/broadway",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "broadway/broadway": "^2.4.0",
+        "spiral/boot": "^3.5",
+        "spiral/core": "^3.5",
+        "spiral/config": "^3.5"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5.27",
+        "friendsofphp/php-cs-fixer": "^3.8",
+        "spiral/testing": "^2.2.0",
+        "vimeo/psalm": "^4.30"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spiral\\Broadway\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spiral\\Broadway\\Tests\\": "tests/src"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "psalm": "vendor/bin/psalm --config=psalm.xml ./src",
+        "cs": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --using-cache=no"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "spiral/composer-publish-plugin": true
+        }
+    },
+    "extra": {
+        "spiral": {
+            "bootloaders": [
+                "Spiral\\Broadway\\Bootloader\\BroadwayBootloader"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
