@@ -120,7 +120,7 @@ final class BroadwayConfigTest extends TestCase
             {
             }
 
-            public function deserialize(array $serializedObject): void
+            public function deserialize(array $serializedObject): mixed
             {
             }
         };

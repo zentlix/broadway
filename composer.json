@@ -10,16 +10,18 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "broadway/broadway": "^2.4.0",
+        "broadway/broadway": "^2.4",
         "spiral/boot": "^3.5",
         "spiral/core": "^3.5",
-        "spiral/config": "^3.5"
+        "spiral/config": "^3.5",
+        "spiral/tokenizer": "^3.5",
+        "spiral/attributes": "^2.14 || ^3.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "phpunit/phpunit": "^9.5.27",
         "friendsofphp/php-cs-fixer": "^3.8",
-        "spiral/testing": "^2.2.0",
+        "spiral/testing": "^2.2",
         "vimeo/psalm": "^4.30"
     },
     "autoload": {
@@ -29,6 +31,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Spiral\\Broadway\\Tests\\App\\": "tests/app",
             "Spiral\\Broadway\\Tests\\": "tests/src"
         }
     },
